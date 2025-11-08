@@ -16,7 +16,7 @@ pipeline {
 
         stage('Checkout from Git') {
             steps {
-                git branch: 'main', url: ''
+                git branch: 'main', url: 'https://github.com/siva-123-hash/Book-My-Show-123.git'
                 sh 'ls -la'  // Verify files after checkout
             }
         }
@@ -35,7 +35,7 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube-creds'
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube'
                 }
             }
         }
@@ -68,10 +68,10 @@ pipeline {
                     withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
                         sh ''' 
                         echo "Building Docker image..."
-                        docker build -t yuvakishor/bms:latest -f bookmyshow-app/Dockerfile bookmyshow-app
+                        docker build -t siva0927/bms:latest -f bookmyshow-app/Dockerfile bookmyshow-app
 
                         echo "Pushing Docker image to registry..."
-                        docker push yuvakishor/bms:latest
+                        docker push siva0927/bms:latest
                         '''
                     }
                 }
@@ -86,7 +86,7 @@ pipeline {
                 docker rm bms || true
 
                 echo "Running new container on port 3000..."
-                docker run -d --restart=always --name bms -p 3000:3000 yuvakishor/bms:latest
+                docker run -d --restart=always --name bms -p 3000:3000 siva0927/bms:latest
 
                 echo "Checking running containers..."
                 docker ps -a
